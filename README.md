@@ -1,4 +1,32 @@
 ## For local development
+We are not using .env file in project so all process.env should pass while it running, in docker and kubernates its handled by their config files, but when you run it without docker using npm run dev we need to pass them, so just update dev script of package.json in all services
+**Auth**
+```
+"dev": "MONGO_URI=mongodb://localhost:27017/ticketing JWT_KEY=sknew ts-node-dev --respawn --transpile-only src/index.ts",
+```
+**expiration**
+```
+"dev": "NATS_URL=http://localhost:4222 NATS_CLUSTER_ID=test-cluster NATS_CLIENT_ID=test-client-expiration ts-node-dev --respawn --transpile-only src/index.ts",
+```
+**orders**
+```
+"dev": "NATS_URL=http://localhost:4222 NATS_CLUSTER_ID=test-cluster NATS_CLIENT_ID=test-client-order MONGO_URI=mongodb://localhost:27017/mic_orders JWT_KEY=sknew ts-node-dev --respawn --transpile-only src/index.ts",
+```
+**payments**
+```
+"dev": "STRIPE_KEY=stripekeyhere NATS_URL=http://localhost:4222 NATS_CLUSTER_ID=test-cluster NATS_CLIENT_ID=test-client-payments MONGO_URI=mongodb://localhost:27017/mic_payments JWT_KEY=sknew ts-node-dev --respawn --transpile-only src/index.ts",
+```
+**tickets**
+```
+"dev": "NATS_URL=http://localhost:4222 NATS_CLUSTER_ID=test-cluster NATS_CLIENT_ID=test-client-ticket MONGO_URI=mongodb://localhost:27017/mic_ticket JWT_KEY=sknew ts-node-dev --respawn --transpile-only src/index.ts",
+```
+**client**
+```
+"dev": "VITE_AUTH_API_URL: http://localhost:3000 VITE_TICKET_API_URL: http://localhost:3001 VITE_PAYMENT_API_URL: http://localhost:3002 VITE_ORDER_API_URL: http://localhost:3003 vite",
+
+```
+
+## For local development using Docker
 ```
 cd infra/compose 
 docker compose up -d
