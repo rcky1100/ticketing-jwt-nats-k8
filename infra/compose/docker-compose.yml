@@ -1,0 +1,136 @@
+x-common-env: &common-env
+  JWT_KEY: sknew
+  NATS_URL: nats://nats:4222
+  NATS_CLUSTER_ID: ticketing
+
+services:
+  auth_api:
+    build:
+      context: ../../auth
+    ports:
+      - 3000:3000
+    environment:
+      <<: *common-env
+      MONGO_URI: mongodb://mongo:27017/ticketing
+    depends_on:
+      - mongo
+    volumes:
+      - ../../auth:/var/www
+      - auth_node_modules:/var/www/node_modules
+  ticket_api:
+    build:
+      context: ../../tickets
+    ports:
+      - 3001:3001
+    environment:
+      <<: *common-env
+      MONGO_URI: mongodb://mongo:27017/mic_ticket
+      NATS_CLIENT_ID: test-client-ticket
+      
+    depends_on:
+      - mongo
+      - nats
+    volumes:
+      - ../../tickets:/var/www
+      - ticket_node_modules:/var/www/node_modules
+
+  payment_api:
+    build:
+      context: ../../payments
+    ports:
+      - 3002:3002
+    environment:
+      <<: *common-env
+      MONGO_URI: mongodb://mongo:27017/mic_payments
+      NATS_CLIENT_ID: test-client-payment
+      STRIPE_KEY: 
+      
+    depends_on:
+      - mongo
+      - nats
+    volumes:
+      - ../../payments:/var/www
+      - payment_node_modules:/var/www/node_modules
+  order_api:
+    build:
+      context: ../../orders
+    ports:
+      - 3003:3003
+    environment:
+      <<: *common-env
+      MONGO_URI: mongodb://mongo:27017/mic_order
+      NATS_CLIENT_ID: test-client-order
+    depends_on:
+      - mongo
+      - nats
+    volumes:
+      - ../../orders:/var/www
+      - order_node_modules:/var/www/node_modules
+
+  expiration_api:
+    build:
+      context: ../../expiration
+    environment:
+      <<: *common-env
+      NATS_CLIENT_ID: test-client-expiration
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+    depends_on:
+      - nats
+    volumes:
+      - ../../expiration:/var/www
+      - expiration_node_modules:/var/www/node_modules
+  frontend:
+    build:
+      context: ../../client
+    ports:
+      - 5178:5173
+    environment:
+      VITE_AUTH_API_URL: http://localhost:3000
+      VITE_TICKET_API_URL: http://localhost:3001
+      VITE_PAYMENT_API_URL: http://localhost:3002
+      VITE_ORDER_API_URL: http://localhost:3003
+    volumes:
+      - ../../client:/app
+      - node_modules:/app/node_modules
+  mongo:
+    image: mongo:8
+    volumes:
+      - ticketing-mongo-data:/data/db
+  nats:
+    image: nats-streaming:0.17.0
+    container_name: nats
+    command:
+      - "-p"
+      - "4222"
+      - "-m"
+      - "8222"
+      - "-hbi"
+      - "5s"
+      - "-hbt"
+      - "5s"
+      - "-hbf"
+      - "2"
+      - "-SD"
+      - "-cid"
+      - "ticketing"
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+    restart: unless-stopped
+  redis:
+    image: redis:7
+    environment:
+      REDIS_HOST: ${REDIS_HOST}
+      REDIS_PORT: 6379
+    volumes:
+      - redis-data:/data
+volumes:
+  auth_node_modules:
+  ticket_node_modules:
+  payment_node_modules:
+  order_node_modules:
+  expiration_node_modules:
+  ticketing-mongo-data:
+  redis-data:
+  node_modules:

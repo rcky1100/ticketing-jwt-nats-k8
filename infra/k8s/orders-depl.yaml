@@ -21,7 +21,7 @@ spec:
                 fieldRef:
                   fieldPath: metadata.name
             - name: NATS_URL
-              value: "http://nats-srv:4222"
+              value: "nats://nats-srv:4222"
             - name: NATS_CLUSTER_ID
               value: ticketing
             - name: MONGO_URI
@@ -43,4 +43,4 @@ spec:
     - name: orders
       protocol: TCP
       port: 3000
-      targetPort: 3000
+      targetPort: 3003
