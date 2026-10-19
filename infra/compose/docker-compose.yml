@@ -43,7 +43,8 @@ services:
       <<: *common-env
       MONGO_URI: mongodb://mongo:27017/mic_payments
       NATS_CLIENT_ID: test-client-payment
-      STRIPE_KEY: 
+    env_file:
+      - .env      
       
     depends_on:
       - mongo

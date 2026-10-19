@@ -68,7 +68,7 @@ kubectl get secrets
 <span style="color:blue">If output is empty or don't contain "jwt-secret or stripe-secret", Create it using below command</span>
 ```
 kubectl create secret generic jwt-secret --from-literal=JWT_KEY=my_super_secret_key
-kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=
+kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=placeyourstripekeyhere
 ```
 
 <span style="color:blue">Make sure you have created docker images for all services, just cd in service directory and run below command for each service</span>
