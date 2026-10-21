@@ -454,6 +454,19 @@ mongodb://auth-mongo-srv:27017/auth
 
 Will work perfectly.
 
+### Kubernetes Best Practices
+- Always use a specific iamge tag or number otherwise latest use automatic you 
+- Manage Liveness probe : Always set this otherwise you may face issue like pod is working but application inside is not working. so when we set Liveness probe kubenetes automatic restart pod if something wrong in application. In this we should just check a health url or a script without any dependencies
+- Manage Readiness probe : Always set this otherwise kubenetes forward traffic before pod/application start and ready for accept traffic. In this we should check all dependencies working, like application connect with db, message broker, redis etc.
+- Use Resources to limit and allow CPU and Memory for each pod.
+- don't use NodePort service for access cluster outside like in browser, instead use LoadBalancer service or Ingress controller.
+- Set at least 2 pod as replica, because if set 1 and pod restart then application will down until it start, so set replica at least 2, if you will not set replica in pod it will be default 1
+- always use at least 2 worker node, if you have a small application but still use at least 2 worker node (aws ec2 instance), because if you run all pods in one worker node then if something went wrong with node, application will be doen.
+- always use labels, so pods will be group and manage
+- Use namespace, by default we have default namespace, so using this we can isolate resources, like ecommerce namaspace for all ecommerce application pods etc. We can also set access rights as per namaspace.
+
+> [!NOTE]
+> We have three options for check liveness, readiness 1. exec (execute a command script) 2. tcpSocket 3. httpGet (a url in applicaiton for just check)
 
 
 
