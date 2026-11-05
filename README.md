@@ -101,12 +101,12 @@ kubectl create secret generic stripe-secret --from-literal=STRIPE_KEY=placeyours
 
 <span style="color:blue">Make sure you have created docker images for all services, just cd in service directory and run below command for each service</span>
 ```
-docker build -f Dockerfile_prod -t auth-app:1.2 .
-docker build -f Dockerfile_prod -t expiration-app:1.2 .
-docker build -f Dockerfile_prod -t orders-app:1.2 .
-docker build -f Dockerfile_prod -t payments-app:1.2 .
-docker build -f Dockerfile_prod -t tickets-app:1.2 .
-docker build -t client-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-auth-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-expiration-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-orders-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-payments-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-tickets-app:1.2 .
+docker build -t ticketing-nats-client-app:1.2 .
 ```
 
 > [!NOTE]

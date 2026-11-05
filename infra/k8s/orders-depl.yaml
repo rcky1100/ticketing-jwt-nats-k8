@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: orders
-          image: orders-app:1.2
+          image: ticketing-nats-orders-app:1.2
           env:
             - name: NATS_CLIENT_ID
               valueFrom:

@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: client
-          image: client-app:1.2
+          image: ticketing-nats-client-app:1.2
           imagePullPolicy: IfNotPresent
 ---
 apiVersion: v1

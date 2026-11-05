@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: auth
-          image: auth-app:1.2
+          image: ticketing-nats-auth-app:1.2
           env:
             - name: MONGO_URI
               value: "mongodb://auth-mongo-srv:27017/auth"

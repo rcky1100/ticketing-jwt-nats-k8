@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: payments
-          image: payments-app:1.2
+          image: ticketing-nats-payments-app:1.2
           env:
             - name: NATS_CLIENT_ID
               valueFrom:
