@@ -5,11 +5,13 @@ import { createTicketRouter } from "./routes/new";
 import { showTicketRouter } from "./routes/show";
 import { indexTicketRouter } from "./routes/index";
 import { updateTicketRouter } from "./routes/update";
+import { healthRouter } from "./routes/health";
 
 const app = express();
 app.set("trust proxy", true);
 app.use(cors());
 app.use(express.json());
+app.use(healthRouter);
 app.use(currentUser);
 app.use(createTicketRouter);
 app.use(showTicketRouter);

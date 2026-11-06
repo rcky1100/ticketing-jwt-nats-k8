@@ -6,11 +6,13 @@ import { deleteOrderRouter } from "./routes/delete";
 import { indexOrderRouter } from "./routes/index";
 import { newOrderRouter } from "./routes/new";
 import { showOrderRouter } from "./routes/show";
+import { healthRouter } from "./routes/health";
 
 const app = express();
 app.set("trust proxy", true);
 app.use(express.json());
 app.use(cors());
+app.use(healthRouter);
 app.use(currentUser);
 
 app.use(deleteOrderRouter);

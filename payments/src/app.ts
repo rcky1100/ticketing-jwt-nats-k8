@@ -2,11 +2,13 @@ import express from "express";
 import cors from "cors";
 import { errorHandler, NotFoundError, currentUser } from "@rcky1983/common";
 import { createChargeRouter } from "./routes/new";
+import { healthRouter } from "./routes/health";
 
 const app = express();
 app.set("trust proxy", true);
 app.use(express.json());
 app.use(cors());
+app.use(healthRouter);
 app.use(currentUser);
 
 app.use(createChargeRouter);

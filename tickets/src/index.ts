@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import { app } from "./app";
 import { natsWrapper } from "./nats-wrapper";
+import { connectMongo } from "./connect-mongo";
 import { OrderCreatedListener } from "./events/listeners/order-created-listener";
 import { OrderCancelledListener } from "./events/listeners/order-cancelled-listener";
 
@@ -21,31 +22,51 @@ const start = async () => {
     throw new Error("NATS_CLUSTER_ID must be defined");
   }
 
+  // Start HTTP server first.
+  // This allows Kubernetes to access health endpoints
+  // even when dependencies are unavailable.
+
+  const server = app.listen(3001, () => {
+    console.log("Listening on port 3001");
+  });
+
+  // Connect MongoDB with retry
+  connectMongo();
+
   try {
     await natsWrapper.connect(
       process.env.NATS_CLUSTER_ID,
       process.env.NATS_CLIENT_ID,
       process.env.NATS_URL,
     );
-    natsWrapper.client.on("close", () => {
-      console.log("NATS connection closed!");
-      process.exit();
-    });
-    process.on("SIGINT", () => natsWrapper.client.close());
-    process.on("SIGTERM", () => natsWrapper.client.close());
 
     new OrderCreatedListener(natsWrapper.client).listen();
     new OrderCancelledListener(natsWrapper.client).listen();
-
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log("Connected to MongoDb");
   } catch (err) {
-    console.error(err);
+    console.error("NATS connection failed:", err);
   }
 
-  app.listen(3001, () => {
-    console.log("Listening on port 3001!!!!!!!!");
-  });
+  // Graceful shutdown
+  const shutdown = async () => {
+    console.log("Shutting down application");
+
+    server.close();
+
+    try {
+      if (natsWrapper.isConnected) {
+        natsWrapper.client.close();
+      }
+
+      await mongoose.connection.close();
+    } catch (error) {
+      console.error("Error during shutdown:", error);
+    }
+
+    process.exit(0);
+  };
+
+  process.on("SIGINT", shutdown);
+  process.on("SIGTERM", shutdown);
 };
 
 start();

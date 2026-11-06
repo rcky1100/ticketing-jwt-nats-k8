@@ -1,4 +1,9 @@
 ## For local development
+### start required mongodb and nats
+```
+docker run -d --name nats-local -p 4222:4222 -p 8222:8222 nats-streaming:0.17.0
+mongod --dbpath=/Users/sk/data/db
+```
 We are not using .env file in project so all process.env should pass while it running, in docker and kubernates its handled by their config files, but when you run it without docker using npm run dev we need to pass them, so just update dev script of package.json in all services
 **Auth**
 ```

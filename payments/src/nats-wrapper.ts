@@ -2,6 +2,7 @@ import nats, { Stan } from "node-nats-streaming";
 
 class NatsWrapper {
   private _client?: Stan;
+  private _isConnected = false;
 
   get client() {
     if (!this._client) {
@@ -10,6 +11,9 @@ class NatsWrapper {
 
     return this._client;
   }
+  get isConnected() {
+    return this._isConnected;
+  }
 
   connect(clusterId: string, clientId: string, url: string) {
     this._client = nats.connect(clusterId, clientId, { url });
@@ -17,10 +21,17 @@ class NatsWrapper {
     return new Promise<void>((resolve, reject) => {
       this.client.on("connect", () => {
         console.log("Connected to NATS");
+        this._isConnected = true;
         resolve();
       });
       this.client.on("error", (err) => {
+        console.error("NATS error:", err);
+        this._isConnected = false;
         reject(err);
+      });
+      this.client.on("close", () => {
+        console.log("NATS connection closed!");
+        this._isConnected = false;
       });
     });
   }
