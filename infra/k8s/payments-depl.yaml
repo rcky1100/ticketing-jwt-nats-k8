@@ -15,6 +15,28 @@ spec:
       containers:
         - name: payments
           image: ticketing-nats-payments-app:1.2
+          startupProbe:
+            httpGet:
+              path: /api/payments/health/live
+              port: 3002
+            periodSeconds: 5
+            failureThreshold: 30
+
+          livenessProbe:
+            httpGet:
+              path: /api/payments/health/live
+              port: 3002
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+
+          readinessProbe:
+            httpGet:
+              path: /api/payments/health/ready
+              port: 3002
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 2
           env:
             - name: NATS_CLIENT_ID
               valueFrom:

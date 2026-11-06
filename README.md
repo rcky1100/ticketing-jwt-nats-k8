@@ -474,5 +474,13 @@ Will work perfectly.
 > We have three options for check liveness, readiness 1. exec (execute a command script) 2. tcpSocket 3. httpGet (a url in applicaiton for just check)
 
 
+### Kubernetes Liveness, readiness probe
+I did following improvements for handle proper Liveness and readiness probe :
+1. Added health routes `/health/live` and `/health/ready` in all backend apis.
+2. Updated backend apis for Graceful shutdown, so if mongodb or nats not available, it will shutdown and kubernetes will restart them.
+3. Added production grade docker image for frontend, so it will be small in size.
+4. Used ngnix in frontend image and added health route in `nginx.conf`, so we can use this route in kubenetes configuration for liveness and readiness
+5. As expiration service was only for background, so there was no routes before, but added health routes for liveness and readiness, 
+6. As expiration service was only for background and we need health routes only in kubenetes cluster, so not created kubenetes service for this, because service is only for external availability.
 
 
