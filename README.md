@@ -111,7 +111,7 @@ docker build -f Dockerfile_prod -t ticketing-nats-expiration-app:1.2 .
 docker build -f Dockerfile_prod -t ticketing-nats-orders-app:1.2 .
 docker build -f Dockerfile_prod -t ticketing-nats-payments-app:1.2 .
 docker build -f Dockerfile_prod -t ticketing-nats-tickets-app:1.2 .
-docker build -t ticketing-nats-client-app:1.2 .
+docker build -f Dockerfile_prod -t ticketing-nats-client-app:1.2 .
 ```
 
 > [!NOTE]

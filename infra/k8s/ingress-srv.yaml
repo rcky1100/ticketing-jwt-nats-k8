@@ -44,4 +44,4 @@ spec:
               service:
                 name: client-srv
                 port:
-                  number: 5173
+                  number: 80

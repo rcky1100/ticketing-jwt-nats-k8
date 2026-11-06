@@ -1,1 +1,10 @@
 node_modules
+dist
+.git
+.gitignore
+Dockerfile
+Dockerfile_prod
+npm-debug.log
+.env
+.env.*
+!.env.production
